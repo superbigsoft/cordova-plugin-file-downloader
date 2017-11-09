@@ -1,6 +1,10 @@
 # file-downloader
 Cordova plugin to download a List of files or a single file to the Phone, check consistency and unzip if necessary (Android and ios)
 
+## Changes 0.2.1 -> 0.3.0
+- Fixed dependencies versions
+- Moved to mramonlopez repos
+
 ## Changes 0.2.0 -> 0.2.1
  - Added downloader.abort() function to abort downloads in progress.
 

@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-file-downloader",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Downloads files to persistant Storage on your Phone, checks md5sum if you want, unzips packed files if necessary (For Android and iOS)",
   "cordova": {
     "id": "cordova-plugin-file-downloader",

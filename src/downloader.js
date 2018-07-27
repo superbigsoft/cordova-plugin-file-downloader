@@ -117,7 +117,7 @@ var Downloader = {
    * @param {String} url
    * @param {?String} md5
    */
-  load: function(url, md5) {
+  load: function(url, md5, firstPriority) {
     //console.log("load");
     //console.log("loading "+url);
     md5 = md5 || null;
@@ -126,7 +126,7 @@ var Downloader = {
       document.addEventListener("DOWNLOADER_initialized", function onInitialized(event) {
         //console.log("initialization done");
         event.target.removeEventListener("DOWNLOADER_initialized", onInitialized, false);
-        Downloader.load(url, md5);
+        Downloader.load(url, md5, firstPriority);
       }, false);
       return;
     }
@@ -135,7 +135,11 @@ var Downloader = {
       name: url.replace(/^.*\//, ""),
       md5: md5
     };
-    Downloader.downloadQueue.push(fileObject);
+    if (firstPriority) {
+      Downloader.downloadQueue.unshift(fileObject);
+    } else {
+      Downloader.downloadQueue.push(fileObject);
+    }
     if (!Downloader.isLoading()) {
       Downloader.loadNextInQueue();
     }
@@ -614,7 +618,7 @@ var Downloader = {
        * @param {String} md5
        * 
        */
-      get: function(url, md5) {
+      get: function (url, md5, firstPriority) {
         /*if (!Downloader.isInitialized()){
           console.error("You have to initialize Downloader first");
           return;
@@ -627,7 +631,7 @@ var Downloader = {
           document.dispatchEvent(createEvent("DOWNLOADER_noWifiConnection"));
           return;
         }
-        return Downloader.load(url, md5);
+        return Downloader.load(url, md5, firstPriority);
       },
       /**
        * downloads multiple Files in a row
@@ -637,14 +641,21 @@ var Downloader = {
        * }
        * @param {Array.<DownloadObject>} list
        */
-      getMultipleFiles: function(list) {
+      getMultipleFiles: function(list, firstPriority) {
         if (Downloader.isWifiOnly() && !Downloader.isWifiConnection()) {
           document.dispatchEvent(createEvent("DOWNLOADER_noWifiConnection"));
           return;
         }
-        for (var i = 0; i < list.length; i++) {
-          var fileObject = list[i];
-          Downloader.load(fileObject.url, fileObject.md5);
+        if (firstPriority) {
+          for (var i = list.length - 1; i >= 0; i--) {
+            var fileObject = list[i];
+            Downloader.load(fileObject.url, fileObject.md5, firstPriority);
+          }
+        } else {
+          for (var i = 0; i < list.length; i++) {
+            var fileObject = list[i];
+            Downloader.load(fileObject.url, fileObject.md5);
+          }
         }
       },
       abort: function() {
